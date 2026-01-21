@@ -1,0 +1,9 @@
+.venv/
+__pycache__/
+*.pyc
+
+data/
+embeddings/
+
+.DS_Store
+#permet de ne pas commit les reccordingd
