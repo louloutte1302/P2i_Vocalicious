@@ -133,3 +133,15 @@ Garantit la reproductibilité du projet.
 
 
 
+
+sr veut dire sample rate (fréquence d’échantillonnage).
+
+C’est le nombre de points par seconde utilisés pour représenter le son.
+
+Exemples :
+
+44100 Hz → 44 100 points par seconde (qualité CD)
+
+22050 Hz → 22 050 points par seconde
+
+16000 Hz → très courant en traitement vocal
