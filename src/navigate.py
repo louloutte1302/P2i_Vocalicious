@@ -37,3 +37,6 @@ def pick_file(folder_path):
                 return files[index]
 
         print("Choix invalide, recommence.")
+
+def clear():
+    print("\033c", end="")

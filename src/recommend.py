@@ -3,32 +3,12 @@ from pathlib import Path
 from sklearn.preprocessing import StandardScaler
 from sklearn.metrics.pairwise import cosine_similarity
 from extract_feat_vocals import extract_voice_features
+from navigate import clear
 
-    
 def recommend(vocal_to_analyse):
-    
-    """
-    Analyse un extrait vocal de l'utilisateur et retourne les enregistrements du catalogue
-    les plus similaires.
 
-    Cette fonction charge le catalogue de caractéristiques (`catalog.npy`) ainsi que les noms des fichiers correspondants
-    (`catalog_names.txt`). Elle extrait ensuite les caractéristiques du fichier vocal fourni, normalise les données et 
-    calcule une similarité cosinus entre l'extrait analysé et les vecteurs du catalogue.
 
-    Les 5 extraits les plus proches sont affichés avec leur score de similarité.
-
-    - extraction de features audio via `extract_voice_features`
-    - normalisation avec `StandardScaler`
-    - comparaison via similarité cosinus.
-   
-    Notes
-    -----
-    Le catalogue doit être créé au préalable avec le script de construction
-    du catalogue (create_catalog_once.py). 
-
-    """
-  
-    # 1) Charger le catalogue déjà calculé
+    # 1) Charger le catalogue
     catalog_path = Path("data/catalog.npy")
     names_path = Path("data/catalog_names.txt")
 
@@ -45,24 +25,30 @@ def recommend(vocal_to_analyse):
     with open(names_path, "r", encoding="utf-8") as f:
         names = [line.strip() for line in f]
 
-    # Extraire features utilisateur
+    # 2) Extraire features utilisateur
     user_features, pitch_label = extract_voice_features(str(vocal_to_analyse))
+
     if user_features is None:
         print("Pas de voix détectée.")
         return
 
-    # 4) Normaliser + comparer (cosine)
+    # 3) Normaliser
     scaler = StandardScaler()
     X_scaled = scaler.fit_transform(X)
     u_scaled = scaler.transform(user_features.reshape(1, -1))
 
+    # 4) Calcul similarité
     sims = cosine_similarity(u_scaled, X_scaled)[0]
     best_idx = np.argsort(-sims)[:5]
 
     # 5) Afficher
+    clear()
     print("\n==============================")
-    print("\nExtrait de voix :", vocal_to_analyse.name)
-    print("Tessiture estimée :", pitch_label)
-    print("Top 5 :")
+    print("\n ✓ Analyse terminée ")
+    print("\n==============================")
+    print("\n Extrait de voix analysé :", vocal_to_analyse.name)
+    print("\n Tessiture estimée :", pitch_label)
+    print("\n Votre Top 5 des musique:")
+
     for i in best_idx:
         print("-", names[i], "| score =", round(float(sims[i]), 3))

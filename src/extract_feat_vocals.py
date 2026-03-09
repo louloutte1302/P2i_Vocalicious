@@ -1,5 +1,6 @@
 import numpy as np
 import librosa
+from navigate import clear
 
 
 def load_audio(audio_path, target_sr):
@@ -105,6 +106,13 @@ def extract_voice_features(audio_path, target_sr=22050, n_mfcc=13):
     """
     Converti toutes les données précédentes en un seul vecteur
     """
+    clear()
+    print("\n==============================")
+    print("\nAnalyse audio en cours...")
+    print("\n==============================")
+   
+
+
     # charger audio
     y, sr = load_audio(audio_path, target_sr)
 
@@ -112,8 +120,9 @@ def extract_voice_features(audio_path, target_sr=22050, n_mfcc=13):
     pitch_mean = compute_pitch(y, sr)
     pitch_label = pitch_to_category(pitch_mean)
 
-    # si pas de pitch détecté, on ignore le fichier (
+    # si pas de pitch détecté, on ignore le fichier
     if pitch_mean is None:
+        print("⚠️  Aucune voix détectée dans cet extrait.")
         return None, pitch_label
 
     # rms
