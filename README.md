@@ -1,3 +1,7 @@
+NOTES POUR LE PROJET!!!!!!!!!
+
+
+
 Un venv (virtual environment) est un environnement Python isolé pour un projet.
 
 👉 C’est comme une bulle :
