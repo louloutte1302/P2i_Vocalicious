@@ -1,91 +1,48 @@
-import sys
 import numpy as np
 from pathlib import Path
 from sklearn.preprocessing import StandardScaler
 from sklearn.metrics.pairwise import cosine_similarity
 
-from extract_feat import extract_voice_features
+from extract_feat_vocals import extract_voice_features
+from navigate import pick_file  
 
 
-AUDIO_EXTS = {".wav", ".mp3", ".flac", ".m4a"}
+def recommend(vocal_to_analyse):
+    # 1) Charger le catalogue déjà calculé
+    catalog_path = Path("data/catalog.npy")
+    names_path = Path("data/catalog_names.txt")
 
-
-def list_audio_files(folder_path):
-    folder = Path(folder_path)
-    files = []
-
-    for f in folder.iterdir():
-        if f.is_file() and f.suffix.lower() in AUDIO_EXTS:
-            files.append(f)
-
-    return files
-
-
-def build_feature_matrix(folder_path):
-    files = list_audio_files(folder_path)
-
-    names = []
-    vectors = []
-
-    for f in files:
-        features, _ = extract_voice_features(str(f))
-        if features is None:
-            continue
-
-        names.append(f.name)
-        vectors.append(features)
-
-    if len(vectors) == 0:
-        raise ValueError("Aucun fichier exploitable.")
-
-    X = np.vstack(vectors)
-    return X, names
-
-
-def top_k_recommend(user_vector, catalog_matrix, catalog_names, k=5):
-    scaler = StandardScaler()
-
-    catalog_scaled = scaler.fit_transform(catalog_matrix)
-    user_scaled = scaler.transform(user_vector.reshape(1, -1))
-
-    sims = cosine_similarity(user_scaled, catalog_scaled)[0]
-    best_indices = np.argsort(-sims)[:k]
-
-    results = []
-    for idx in best_indices:
-        results.append((catalog_names[idx], float(sims[idx])))
-
-    return results
-
-
-def main():
-    if len(sys.argv) < 2:
-        print("Usage: python compare_voice.py NOM_FICHIER.wav")
+    if not catalog_path.exists():
+        print("Catalogue introuvable ! Lance d'abord : python src/create_catalog_once.py")
         return
 
-    user_file_name = sys.argv[1]
+    if not names_path.exists():
+        print("Fichier des noms introuvable !")
+        return
 
-    user_path = Path("data/vocals_to_analyse") / user_file_name
-    catalog_folder = "data/vocals_only"
+    X = np.load(catalog_path)
 
-    # 1️⃣ Extraire features utilisateur
-    user_features, pitch_label = extract_voice_features(str(user_path))
+    with open(names_path, "r", encoding="utf-8") as f:
+        names = [line.strip() for line in f]
 
+    # Extraire features utilisateur
+    user_features, pitch_label = extract_voice_features(str(vocal_to_analyse))
     if user_features is None:
         print("Pas de voix détectée.")
         return
 
-    # 2️⃣ Construire matrice catalogue
-    catalog_matrix, catalog_names = build_feature_matrix(catalog_folder)
+    # 4) Normaliser + comparer (cosine)
+    scaler = StandardScaler()
+    X_scaled = scaler.fit_transform(X)
+    u_scaled = scaler.transform(user_features.reshape(1, -1))
 
-    # 3️⃣ Comparer
-    results = top_k_recommend(user_features, catalog_matrix, catalog_names, k=5)
+    sims = cosine_similarity(u_scaled, X_scaled)[0]
+    best_idx = np.argsort(-sims)[:5]
 
-    print("\nVoix détectée comme :", pitch_label)
-    print("Top 5 recommandations :")
-    for name, score in results:
-        print("-", name, "| score =", round(score, 3))
-
-
-if __name__ == "__main__":
-    main()
+    # 5) Afficher
+    print("\n==============================")
+    print("\nExtrait :", vocal_to_analyse.name)
+    print("Tessiture estimée :", pitch_label)
+    print("Top 5 :")
+    for i in best_idx:
+        print("-", names[i], "| score =", round(float(sims[i]), 3))

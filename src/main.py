@@ -1,4 +1,5 @@
-from .recommend import *
+from navigate import *
+from recommend import *
 
 def main():
     user_folder = "data/vocals_to_analyse"
