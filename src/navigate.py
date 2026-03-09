@@ -15,8 +15,10 @@ def pick_file(folder_path):
     """
 
     folder = Path(folder_path)
-
-    files = [f for f in folder.iterdir() if f.is_file()]
+    files = [
+    f for f in folder.iterdir()
+    if f.is_file() and f.suffix.lower() in [".m4a", ".wav", ".mp3"]
+]
     files.sort()
 
     if len(files) == 0:

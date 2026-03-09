@@ -4,18 +4,19 @@ from navigate import clear
 
 
 def load_audio(audio_path, target_sr):
-
     """
     Charge un fichier audio en mono et le met au sample rate target_sr.
     Renvoie : y (signal), sr (sample rate)
     """
-
     y, sr = librosa.load(audio_path, sr=target_sr, mono=True)
-    # remet au niveau sample rate nécessaire (inf à 8hz pour les humains donc env 22000 c'est top) audio nécessaire 
-    # + en mono et non stéréo (une seule sortie et non droite gauche)
-
+    # fichier vide
     if len(y) == 0:
         raise ValueError("Audio vide ou illisible.")
+    
+    # fichier silencieux (toutes les amplitudes ~0)
+    rms = np.sqrt(np.mean(y ** 2))
+    if rms < 1e-3:
+        raise ValueError("Audio silencieux.")
 
     return y, sr
 
@@ -27,6 +28,7 @@ def compute_pitch(y, sr):
     """
     fmin = float(librosa.note_to_hz("C2")) #note la plus basse jamais chantée par un homme
     fmax = float(librosa.note_to_hz("C7")) #note la plus haute jamais chantée par une femme
+  
 
     f0, _, _ = librosa.pyin(y, fmin=fmin, fmax=fmax)
 
@@ -111,10 +113,13 @@ def extract_voice_features(audio_path, target_sr=22050, n_mfcc=13):
     print("\nAnalyse audio en cours...")
     print("\n==============================")
    
-
-
     # charger audio
-    y, sr = load_audio(audio_path, target_sr)
+    try:
+        y, sr = load_audio(audio_path, target_sr)
+    except ValueError as e:
+        print(f"⚠️ {e}")
+        return None, "inconnu"
+
 
     # pitch
     pitch_mean = compute_pitch(y, sr)
@@ -122,7 +127,6 @@ def extract_voice_features(audio_path, target_sr=22050, n_mfcc=13):
 
     # si pas de pitch détecté, on ignore le fichier
     if pitch_mean is None:
-        print("⚠️  Aucune voix détectée dans cet extrait.")
         return None, pitch_label
 
     # rms
@@ -133,8 +137,9 @@ def extract_voice_features(audio_path, target_sr=22050, n_mfcc=13):
 
     # vecteur numérique final
     # -> 1 pitch + 1 rms + 13 mfcc = 15 valeurs
-    features = np.concatenate(
-        [np.array([pitch_mean, rms_mean], dtype=np.float32), mfcc_means]
-    )
-
-    return features, pitch_label
+    if pitch_mean != None:
+        features = np.concatenate([np.array([pitch_mean, rms_mean], dtype=np.float32), mfcc_means])
+        return features, pitch_label
+    else:
+        features = None
+        return features, pitch_label
