@@ -2,12 +2,32 @@ import numpy as np
 from pathlib import Path
 from sklearn.preprocessing import StandardScaler
 from sklearn.metrics.pairwise import cosine_similarity
-
 from extract_feat_vocals import extract_voice_features
-from navigate import pick_file  
 
-
+    
 def recommend(vocal_to_analyse):
+    
+    """
+    Analyse un extrait vocal de l'utilisateur et retourne les enregistrements du catalogue
+    les plus similaires.
+
+    Cette fonction charge le catalogue de caractéristiques (`catalog.npy`) ainsi que les noms des fichiers correspondants
+    (`catalog_names.txt`). Elle extrait ensuite les caractéristiques du fichier vocal fourni, normalise les données et 
+    calcule une similarité cosinus entre l'extrait analysé et les vecteurs du catalogue.
+
+    Les 5 extraits les plus proches sont affichés avec leur score de similarité.
+
+    - extraction de features audio via `extract_voice_features`
+    - normalisation avec `StandardScaler`
+    - comparaison via similarité cosinus.
+   
+    Notes
+    -----
+    Le catalogue doit être créé au préalable avec le script de construction
+    du catalogue (create_catalog_once.py). 
+
+    """
+  
     # 1) Charger le catalogue déjà calculé
     catalog_path = Path("data/catalog.npy")
     names_path = Path("data/catalog_names.txt")
@@ -41,7 +61,7 @@ def recommend(vocal_to_analyse):
 
     # 5) Afficher
     print("\n==============================")
-    print("\nExtrait :", vocal_to_analyse.name)
+    print("\nExtrait de voix :", vocal_to_analyse.name)
     print("Tessiture estimée :", pitch_label)
     print("Top 5 :")
     for i in best_idx:
