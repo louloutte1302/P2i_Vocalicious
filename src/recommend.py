@@ -7,14 +7,14 @@ from navigate import clear
 
 def recommend(vocal_to_analyse):
 
-    # 1) Extraire features utilisateur
+    # Extraire features utilisateur
     user_features, pitch_label = extract_voice_features(str(vocal_to_analyse))
 
     if user_features is None:
         print("Pas de voix détectée.\n")
         return
 
-    # 2) Charger le catalogue
+    # Charger le catalogue
     catalog_path = Path("data/catalog.npy")
     names_path = Path("data/catalog_names.txt")
 
@@ -32,17 +32,17 @@ def recommend(vocal_to_analyse):
         names = [line.strip() for line in f]
 
     
-    # 3) Normaliser
+    # Normaliser
     scaler = StandardScaler()
     X_scaled = scaler.fit_transform(X)
     u_scaled = scaler.transform(user_features.reshape(1, -1))
 
-    # 4) Calcul similarité
+    # Calcul similarité
     sims = cosine_similarity(u_scaled, X_scaled)[0]
     best_idx = np.argsort(-sims)[:5]
 
-    # 5) Afficher
-    #clear()
+    # Afficher
+    clear()
     print("\n==============================")
     print("\n ✓ Analyse terminée ")
     print("\n==============================")
