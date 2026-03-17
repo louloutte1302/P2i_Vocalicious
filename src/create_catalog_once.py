@@ -4,7 +4,7 @@ from tqdm import tqdm
 from extract_feat_vocals import extract_voice_features
 
 """
-build_catalog.py
+create_catalog_once.py
 
 Construit un catalogue de caractéristiques audio à partir des fichiers
 présents dans le dossier `data/vocals_30sec`.
