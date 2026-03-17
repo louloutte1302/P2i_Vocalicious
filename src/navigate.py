@@ -15,9 +15,16 @@ def pick_file(folder_path):
     """
 
     folder = Path(folder_path)
+
+    # print("Dossier lu :", folder.resolve())
+
+    all_files = [f for f in folder.iterdir() if f.is_file()]
+    # print("Tous les fichiers :", [f.name for f in all_files])
+    
     files = [
-    f for f in folder.iterdir()
-    if f.is_file() and f.suffix.lower() in [".m4a", ".wav", ".mp3"]
+    f for f in all_files
+        if not f.name.startswith(".")
+        and f.name.lower().endswith((".m4a", ".wav", ".mp3"))
 ]
     files.sort()
 
@@ -37,6 +44,30 @@ def pick_file(folder_path):
 
             if 0 <= index < len(files):
                 return files[index]
+
+        print("Choix invalide, recommencez.")
+
+def pick_from_list(items):
+    """
+    Permet de sélectionner un élément dans une liste via le terminal.
+    """
+    if len(items) == 0:
+        return("Liste vide.")
+
+    print("\nChoisis un morceau à écouter (0 - Quitter):\n")
+
+    
+    while True:
+        choice = input("\nNuméro du morceau : ")
+
+        if choice.isdigit():
+            index = int(choice)
+
+            if index == 0:
+                return None
+
+            if 1 <= index <= len(items):
+                return items[index - 1]
 
         print("Choix invalide, recommence.")
 

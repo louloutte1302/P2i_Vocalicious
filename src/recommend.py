@@ -41,6 +41,8 @@ def recommend(vocal_to_analyse):
     sims = cosine_similarity(u_scaled, X_scaled)[0]
     best_idx = np.argsort(-sims)[:5]
 
+    recommended_names = [names[i] for i in best_idx]
+
     # Afficher
     clear()
     print("\n==============================")
@@ -49,6 +51,9 @@ def recommend(vocal_to_analyse):
     print("\n Extrait de voix analysé :", vocal_to_analyse.name)
     print("\n Tessiture estimée :", pitch_label)
     print("\n Votre Top 5 des musique:")
-
+    
+    
     for i in best_idx:
-        print("-", names[i], "| score =", round(float(sims[i]), 3))
+        print("x", names[i], "| score =", round(float(sims[i]), 3))
+    
+    return recommended_names

@@ -14,6 +14,21 @@ propre base de données de musiques
 
 """
 
-def create_environment():
-    {
-    }
+
+
+
+def check_dataset():
+    print("\nSouhaitez-vous utiliser la base de musiques disponible ?")
+
+    while True:
+        choice = input("Tapez O pour oui et N pour non : ").strip().lower()
+
+        if choice == "o":
+            break
+
+        elif choice == "n":
+            print("Fonctionnalité à venir...")
+            break
+
+        else:
+            print("Choix invalide, recommencez.")
