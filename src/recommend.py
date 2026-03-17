@@ -54,6 +54,6 @@ def recommend(vocal_to_analyse):
     
     
     for i in best_idx:
-        print("x", names[i], "| score =", round(float(sims[i]), 3))
-    
+        print("x", names[i], f"| avec {sims[i]:.2%} de similarité de voix")
+
     return recommended_names
