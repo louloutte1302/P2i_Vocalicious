@@ -15,12 +15,11 @@ pour le calcul d'embeddings vocaux dans les étapes suivantes du projet.
 from pathlib import Path
 import shutil
 
-DEMUX_DIR = Path("data/vocals/htdemucs")
+DEMUCS_DIR = Path("data/vocals/htdemucs")
 OUTPUT_DIR = Path("data/vocals_only")
-OUTPUT_DIR.mkdir(exist_ok=True)
 
 def main():
-    for track_dir in DEMUX_DIR.iterdir():
+    for track_dir in DEMUCS_DIR.iterdir():
         if not track_dir.is_dir():
             continue
 

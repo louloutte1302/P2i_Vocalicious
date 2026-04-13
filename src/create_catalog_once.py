@@ -26,8 +26,7 @@ l'extraction des features.
 """
 
 folder = Path("data/vocals_30sec")
-files = [f for f in folder.iterdir() if f.is_file()]
-files.sort()
+files = [f for f in folder.iterdir()]
 
 names = []
 vectors = []

@@ -1,4 +1,5 @@
 from pathlib import Path
+import record_audio
 
 
 def pick_file(folder_path):
@@ -47,6 +48,7 @@ def pick_file(folder_path):
 
         print("Choix invalide, recommencez.")
 
+
 def pick_from_list(items):
     """
     Permet de sélectionner un élément dans une liste via le terminal.
@@ -54,22 +56,39 @@ def pick_from_list(items):
     if len(items) == 0:
         return("Liste vide.")
 
-    print("\nChoisis un morceau à écouter (0 - Quitter):\n")
 
+    print("\nChoisis un morceau de 1 à 5 à écouter (0 - Quitter):\n")
+
+    choice = input("\nNuméro du morceau : ")
     
-    while True:
-        choice = input("\nNuméro du morceau : ")
+    if choice.isdigit():
+        index = int(choice)
 
-        if choice.isdigit():
-            index = int(choice)
+        if 1 <= index <= len(items):
+            return items[index - 1]
 
-            if index == 0:
-                return None
-
-            if 1 <= index <= len(items):
-                return items[index - 1]
-
-        print("Choix invalide, recommence.")
-
+        else: return None
+        
 def clear():
     print("\033c", end="")
+
+def pick_audio(folder_path):
+    """
+    Permet de choisir entre importer un audio ou en enregistrer un.
+    """
+
+    while True:
+        print("\nQue veux-tu faire ?\n")
+        print("1 - Importer un audio existant")
+        print("2 - Enregistrer un audio avec le micro")
+
+        choice = input("\nTon choix : ")
+
+        if choice == "1":
+            return pick_file(folder_path)
+
+        elif choice == "2":
+            return record_audio.record_audio()
+
+        else:
+            print("Choix invalide, recommence.")

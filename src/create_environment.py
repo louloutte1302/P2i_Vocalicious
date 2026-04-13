@@ -14,9 +14,6 @@ propre base de données de musiques
 
 """
 
-
-
-
 def check_dataset():
     print("\nSouhaitez-vous utiliser la base de musiques disponible ?")
 

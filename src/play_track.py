@@ -7,8 +7,6 @@ Récupère la sortie de recommend.py avec les noms des recommendations, les recr
 avec les tracks initiaux de data/raw_traks. Utilise trim_to_30sec.py pour proposer 
 les extraits des raw_tracks.
 
-ATTENTION: ne fonctionne que sur macos! car utilise os
-
 """
 
 
@@ -26,6 +24,7 @@ def find_original_from_vocal(vocal_name, raw_folder="data/raw_tracks"):
 
 
 def play_preview(vocal_name, start_sec=30, duration_sec=15):
+
     original_file = find_original_from_vocal(vocal_name, raw_folder="data/raw_tracks")
 
     if original_file is None:
@@ -34,3 +33,5 @@ def play_preview(vocal_name, start_sec=30, duration_sec=15):
 
     print(f"\nLecture de l'extrait : {vocal_name}")
     os.system(f'ffplay -nodisp -autoexit -ss {start_sec} -t {duration_sec} "{original_file}" >/dev/null 2>&1')
+
+    
