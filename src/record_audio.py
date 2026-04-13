@@ -3,6 +3,14 @@ from scipy.io.wavfile import write
 from pathlib import Path
 import time
 
+"""
+record_audio.py
+
+Enregistre un audio via le micro du matériel utilisé
+puis enregistre l'audio dans le dossier vocals_to_analyse
+
+"""
+
 def record_audio ():
     fs = 44100  # fréquence d'échantillonnage
     duration = 27  # secondes
