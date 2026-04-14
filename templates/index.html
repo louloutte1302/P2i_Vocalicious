@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Vocalicious</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<h1>Vocalicious</h1>
+
+<h2>Importer un audio</h2>
+<form method="post" enctype="multipart/form-data">
+    <input type="hidden" name="action" value="upload">
+    <input type="file" name="audio" accept=".wav,.mp3,.m4a">
+    <button type="submit">Analyser</button>
+</form>
+
+<hr>
+
+<h2>Enregistrer</h2>
+<form method="post" id="recordForm">
+    <input type="hidden" name="action" value="record">
+    <button type="button" onclick="startRecording()">Enregistrer</button>
+</form>
+
+<div id="progressContainer" style="display:none; width:80%; max-width:500px; margin:20px auto;">
+    <p>Enregistrement en cours...</p>
+    <progress id="progress" value="0" max="27" style="width:100%; height:24px;"></progress>
+</div>
+
+<hr>
+<h2>Résultats</h2>
+<ul>
+    {% for track in results %}
+    <li>
+        <span>{{ track }}</span>
+        <form method="post" action="/listen" style="display:inline;">
+            <input type="hidden" name="track_name" value="{{ track }}">
+            <button type="submit">Écouter</button>
+        </form>
+    </li>
+    {% endfor %}
+</ul>
+
+<script>
+function startRecording() {
+    const form = document.getElementById("recordForm");
+    const bar = document.getElementById("progress");
+    const container = document.getElementById("progressContainer");
+
+    container.style.display = "block";
+    bar.value = 0;
+   
+    let t = 0;
+
+    const interval = setInterval(() => {
+        t++;
+        bar.value = t;
+
+        if (t === 1) {
+            form.submit();
+        }
+
+        if (t === 27) {
+            clearInterval(interval);
+        }
+    }, 1000);
+}
+</script>
+
+</body>
+</html>

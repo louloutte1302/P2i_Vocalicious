@@ -104,7 +104,7 @@ def compute_mfcc_means(y, sr, n_mfcc):
     return mfcc_means.astype(np.float32)
 
 
-def extract_voice_features(audio_path, target_sr=22050, n_mfcc=13):
+def extract_voice_features(audio_path, target_sr=22050, n_mfcc=13,):
     """
     Converti toutes les données précédentes en un seul vecteur
     """

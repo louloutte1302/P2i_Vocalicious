@@ -68,7 +68,6 @@ def pick_from_list(items):
             return items[index - 1]
 
         else: return None
-        
 def clear():
     print("\033c", end="")
 
