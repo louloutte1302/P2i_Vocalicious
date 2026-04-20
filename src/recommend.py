@@ -5,6 +5,11 @@ from sklearn.metrics.pairwise import cosine_similarity
 from extract_feat_vocals import extract_voice_features
 from navigate import clear
 
+"""
+reocmmend.py
+Compare l'audio utilisateur à la BDD des musiques en utilisant un cosine similarity
+"""
+
 def recommend(vocal_to_analyse):
 
     # Extraire features utilisateur
